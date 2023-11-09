@@ -1,131 +1,152 @@
 <p-toast></p-toast>
-
-<h1 class="font-semibol text-3xl">Image Tool</h1>
-
-<div class="grid w-8 flex align-items-center">
-  <div class="col-12">
-    <p-fileUpload #fileUpload mode="basic" name="demoFile[]" chooseLabel="Görsel Yükle"
-      uploadLabel="Seçili Görseli Yükle" accept="image/png,image/jpg,image/jpeg" [customUpload]="true"
-      (uploadHandler)="onUpload($event,fileUpload)"></p-fileUpload>
+<p-blockUI [target]="pnl" [blocked]="blockedPanel">
+  <div class="flex flex-column align-items-center gap-2">
+    <p-progressSpinner></p-progressSpinner>
+    <span class="font-semibold text-xl text-white">Araç Çalışıyor Lütfen Bekleyiniz...</span>
   </div>
-  <div class="col-12 flex flex-column gap-4">
-    Çözünürlük Seçiniz
+</p-blockUI>
+<app-blockable-div #pnl>
+  <h1 class="font-semibol text-3xl">Image Tool</h1>
+  <div class="grid">
+    <div class="col-8">
+      <div class="grid flex align-items-center">
+        <div class="col-12 flex gap-2">
+          <button pButton label="Dosyayı Yükle" (click)="onUpload()"></button>
+          <button *ngIf="finalImage" pButton label="İndir" class="p-button-success" icon="pi pi-download"
+            (click)="downloadFile()"></button>
+        </div>
+        <div class="col-12 flex flex-column gap-4">
+          Çözünürlük Seçiniz
 
-    <div class="flex flex-wrap gap-6">
-      <div class="flex align-items-center">
-        <p-radioButton name="720p" value="720" [(ngModel)]="resolution" inputId="resolution1"></p-radioButton>
-        <label for="resolution1" class="ml-2">720 </label>
-      </div>
+          <div class="flex flex-wrap gap-6">
+            <div class="flex align-items-center">
+              <p-radioButton name="720p" value="720" [(ngModel)]="resolution" inputId="resolution1"></p-radioButton>
+              <label for="resolution1" class="ml-2">720 </label>
+            </div>
 
-      <div class="flex align-items-center">
-        <p-radioButton name="1080p" value="1080" [(ngModel)]="resolution" inputId="resolution2"></p-radioButton>
-        <label for="resolution2" class="ml-2">1080 ( HD)</label>
-      </div>
+            <div class="flex align-items-center">
+              <p-radioButton name="1080p" value="1080" [(ngModel)]="resolution" inputId="resolution2"></p-radioButton>
+              <label for="resolution2" class="ml-2">1080 ( HD)</label>
+            </div>
 
-      <div class="flex align-items-center">
-        <p-radioButton name="2k" value="2K" [(ngModel)]="resolution" inputId="resolution3"></p-radioButton>
-        <label for="resolution3" class="ml-2">2K (Full HD)</label>
-      </div>
+            <div class="flex align-items-center">
+              <p-radioButton name="2k" value="2K" [(ngModel)]="resolution" inputId="resolution3"></p-radioButton>
+              <label for="resolution3" class="ml-2">2K (Full HD)</label>
+            </div>
 
-      <div class="flex align-items-center">
-        <p-radioButton name="4k" value="4K" [(ngModel)]="resolution" inputId="resolution4"></p-radioButton>
-        <label for="resolution4" class="ml-2">4K (Ultra HD)</label>
-      </div>
-      <div class="flex align-items-center gap-2">
-        <p-radioButton name="custom" value="custom" [(ngModel)]="resolution" inputId="resolution5"></p-radioButton>
-        <div class="flex gap-4 align-items-center">
-          <span class="p-float-label">
-            <p-inputNumber inputId="width" [(ngModel)]="customWidth"> </p-inputNumber>
-            <label htmlFor="width">Width</label>
-          </span>
-          <span class="font-semibold text-2xl">X</span>
-          <span class="p-float-label">
-            <p-inputNumber inputId="width" [(ngModel)]="customHeight"> </p-inputNumber>
-            <label htmlFor="height">Height</label>
-          </span>
+            <div class="flex align-items-center">
+              <p-radioButton name="4k" value="4K" [(ngModel)]="resolution" inputId="resolution4"></p-radioButton>
+              <label for="resolution4" class="ml-2">4K (Ultra HD)</label>
+            </div>
+            <div class="flex align-items-center gap-2">
+              <p-radioButton name="custom" value="custom" [(ngModel)]="resolution"
+                inputId="resolution5"></p-radioButton>
+              <div class="flex gap-4 align-items-center">
+                <span class="p-float-label">
+                  <p-inputNumber inputId="width" [(ngModel)]="customWidth"> </p-inputNumber>
+                  <label htmlFor="width">Width</label>
+                </span>
+                <span class="font-semibold text-2xl">X</span>
+                <span class="p-float-label">
+                  <p-inputNumber inputId="width" [(ngModel)]="customHeight"> </p-inputNumber>
+                  <label htmlFor="height">Height</label>
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 flex flex-column gap-2">
+          <span>Dosya Tipini Seçiniz</span>
+          <div class="flex flex-wrap gap-6">
+            <div class="flex align-items-center">
+              <p-radioButton name="jpg" value="jpg" [(ngModel)]="imageFormat" inputId="imageFormat"></p-radioButton>
+              <label for="imageFormat1" class="ml-2">JPG </label>
+            </div>
+
+            <div class="flex align-items-center">
+              <p-radioButton name="png" value="png" [(ngModel)]="imageFormat" inputId="imageFormat"></p-radioButton>
+              <label for="imageFormat2" class="ml-2">PNG</label>
+            </div>
+
+          </div>
+        </div>
+        <div class="col-12 flex flex-column gap-2">
+          <span>En Boy Oranını Seçiniz</span>
+          <div class="flex flex-wrap gap-6">
+            <div class="flex align-items-center">
+              <p-radioButton name="4/3" value="4 / 3" [(ngModel)]="customAspectRatio"
+                inputId="aspectRatio"></p-radioButton>
+              <label for="aspectRatio" class="ml-2">4:3 </label>
+            </div>
+
+            <div class="flex align-items-center">
+              <p-radioButton name="16/9" value="16 / 9" [(ngModel)]="customAspectRatio"
+                inputId="aspectRatio"></p-radioButton>
+              <label for="aspectRatio" class="ml-2">16:9</label>
+            </div>
+
+            <div class="flex align-items-center gap-2">
+              <p-radioButton name="custom" value="custom" [(ngModel)]="customAspectRatio"
+                inputId="resolution5"></p-radioButton>
+              <div class="flex gap-4 align-items-center">
+                <span class="p-float-label">
+                  <p-inputNumber inputId="customAspectRatio1" [(ngModel)]="customAspectRatio1"> </p-inputNumber>
+                  <label htmlFor="customAspectRatio1">En Oranını Giriniz</label>
+                </span>
+                <span class="font-semibold text-2xl">:</span>
+                <span class="p-float-label">
+                  <p-inputNumber inputId="customAspectRatio2" [(ngModel)]="customAspectRatio2"> </p-inputNumber>
+                  <label htmlFor="customAspectRatio2">Boy Oranını Giriniz</label>
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-6 flex flex-column gap-2">
+          <span>Sıkıştırma Oranını Giriniz</span>
+          <div>
+            <input type="text" pInputText [(ngModel)]="compressValue" class="w-full" />
+            <p-slider [maxlength]="100" [(ngModel)]="compressValue" class="w-full"></p-slider>
+          </div>
+        </div>
+        <div *ngIf="!imageFile" class="col-12 flex flex-column gap-2 align-items-center">
+          <i class="pi pi-upload"></i>
+          <span class="font-semibold text-medium">Henüz bir dosya yüklemediniz aracı çalıştırmak için lütfen görsel
+            yükleyin</span>
+        </div>
+        <div class="col-12 flex align-items-end gap-2">
+          <button pButton [disabled]="!imageFile" label="Uygula" (click)="applyChanges()"></button>
+        </div>
+        <div *ngIf="imageFile" class="col-12 flex align-items-center gap-4">
+          <div class="flex flex-column gap-2">
+            <span>Önceki Hali</span>
+            <small>Burada görsel görünürlüğü sağlamak amacıyla standart boyutlandırma verilmiştir, indireceğiniz
+              görselin
+              boyutları tamamen sizin belirlediğinz boyutlar üzerinden yapılandırılacaktır.</small>
+            <img [src]="previousImage" alt="before" width="550" height="550" />
+          </div>
+
+          <div *ngIf="finalImage" class="flex flex-column gap-2">
+            <span>Sonraki Hali</span>
+            <small>Burada görsel görünürlüğü sağlamak amacıyla standart boyutlandırma verilmiştir, indireceğiniz
+              görselin
+              boyutları tamamen sizin belirlediğinz boyutlar üzerinden yapılandırılacaktır.</small>
+            <img [src]="finalImage" width="550" height="550" alt="after" />
+          </div>
         </div>
       </div>
-    </div>
-  </div>
-  <div class="col-12 flex flex-column gap-2">
-    <span>Dosya Tipini Seçiniz</span>
-    <div class="flex flex-wrap gap-6">
-      <div class="flex align-items-center">
-        <p-radioButton name="jpg" value="jpg" [(ngModel)]="imageFormat" inputId="imageFormat"></p-radioButton>
-        <label for="imageFormat1" class="ml-2">JPG </label>
-      </div>
-
-      <div class="flex align-items-center">
-        <p-radioButton name="png" value="png" [(ngModel)]="imageFormat" inputId="imageFormat"></p-radioButton>
-        <label for="imageFormat2" class="ml-2">PNG</label>
-      </div>
 
     </div>
-  </div>
-  <div class="col-12 flex flex-column gap-2">
-    <span>En Boy Oranını Seçiniz</span>
-    <div class="flex flex-wrap gap-6">
-      <div class="flex align-items-center">
-        <p-radioButton name="4/3" value="4 / 3" [(ngModel)]="customAspectRatio" inputId="aspectRatio"></p-radioButton>
-        <label for="aspectRatio" class="ml-2">4:3 </label>
-      </div>
-
-      <div class="flex align-items-center">
-        <p-radioButton name="16/9" value="16 / 9" [(ngModel)]="customAspectRatio" inputId="aspectRatio"></p-radioButton>
-        <label for="aspectRatio" class="ml-2">16:9</label>
-      </div>
-
-      <div class="flex align-items-center gap-2">
-        <p-radioButton name="custom" value="custom" [(ngModel)]="customAspectRatio"
-          inputId="resolution5"></p-radioButton>
-        <div class="flex gap-4 align-items-center">
-          <span class="p-float-label">
-            <p-inputNumber inputId="customAspectRatio1" [(ngModel)]="customAspectRatio1"> </p-inputNumber>
-            <label htmlFor="customAspectRatio1">En Oranını Giriniz</label>
-          </span>
-          <span class="font-semibold text-2xl">:</span>
-          <span class="p-float-label">
-            <p-inputNumber inputId="customAspectRatio2" [(ngModel)]="customAspectRatio2"> </p-inputNumber>
-            <label htmlFor="customAspectRatio2">Boy Oranını Giriniz</label>
-          </span>
-        </div>
-      </div>
+    <div *ngIf="finalImage" class="col-4  ">
+      <p-messages severity="info">
+        <ng-template pTemplate>
+          <div class="flex flex-column gap-2">
+            <span>Orjinal Dosya Boyutu: {{originalImageFileSize|fileSize}}</span>
+            <span *ngIf="finalImage">Son Çıktı Dosya Boyutu: {{finalImageFileSize|fileSize}}</span>
+          </div>
+        </ng-template>
+      </p-messages>
     </div>
   </div>
-  <div class="col-6 flex flex-column gap-2">
-    <span>Sıkıştırma Oranını Giriniz</span>
-    <div>
-      <input type="text" pInputText [(ngModel)]="compressValue" class="w-full" />
-      <p-slider [maxlength]="100" [(ngModel)]="compressValue" class="w-full"></p-slider>
-    </div>
-  </div>
-  <div *ngIf="!imageFile" class="col-12 flex flex-column gap-2 align-items-center">
-    <i class="pi pi-upload"></i>
-    <span class="font-semibold text-medium">Henüz bir dosya yüklemediniz aracı çalıştırmak için lütfen görsel
-      yükleyin</span>
-  </div>
-  <div *ngIf="imageFile" class="col-12 flex flex-column gap-2">
-    <span> Çalışma Alanı</span>
-    <image-cropper [imageFile]="imageFile" [maintainAspectRatio]="true" [aspectRatio]="customAspectRatio"
-      [format]="imageFormat" [imageQuality]="compressValue-100" (imageCropped)="imageCropped($event)"
-      (imageLoaded)="imageLoaded($event)" (cropperReady)="cropperReady()"
-      (loadImageFailed)="loadImageFailed()"></image-cropper>
-  </div>
 
-  <div></div>
-
-  <div *ngIf="imageFile" class="col-12 flex align-items-center gap-4">
-    <div class="flex flex-column gap-2">
-      <span>Önceki Hali</span>
-      <small>Burada görsel görünürlüğü sağlamak amacıyla standart boyutlandırma verilmiştir, indireceğiniz görselin
-        boyutları tamamen sizin belirlediğinz boyutlar üzerinden yapılandırılacaktır.</small>
-      <img [src]="previousImage" alt="before" width="550" height="550" />
-    </div>
-    <div *ngIf="finalImage" class="flex flex-column gap-2">
-      <span>Sonraki Hali</span>
-      <small>Burada görsel görünürlüğü sağlamak amacıyla standart boyutlandırma verilmiştir, indireceğiniz görselin
-        boyutları tamamen sizin belirlediğinz boyutlar üzerinden yapılandırılacaktır.</small>
-      <img [src]="finalImage" alt="after" width="550" height="550" />
-    </div>
-  </div>
-</div>
+</app-blockable-div>
