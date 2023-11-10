@@ -5,7 +5,6 @@ import { FileSizePipe } from './pipe/fileSize.pipe';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css'],
   providers: [MessageService, FileSizePipe],
 })
 export class AppComponent {
